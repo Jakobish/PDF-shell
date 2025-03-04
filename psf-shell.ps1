@@ -1,12 +1,12 @@
 Add-Type -AssemblyName System.Windows.Forms
 
-# יצירת טופס ראשי
+# Create the main form
 $form = New-Object System.Windows.Forms.Form
 $form.Text = "Forensic Tool Interface"
 $form.Size = New-Object System.Drawing.Size(600,400)
 $form.StartPosition = "CenterScreen"
 
-# כפתור בחירת קובץ
+# Button to select a file
 $fileDialog = New-Object System.Windows.Forms.OpenFileDialog
 $fileDialog.Filter = "All Files (*.*)| *.*"
 $buttonBrowse = New-Object System.Windows.Forms.Button
@@ -18,13 +18,13 @@ $buttonBrowse.Add_Click({
 })
 $form.Controls.Add($buttonBrowse)
 
-# שדה טקסט להצגת הנתיב שנבחר
+# Text field to display the selected file path
 $textBoxFile = New-Object System.Windows.Forms.TextBox
 $textBoxFile.Location = New-Object System.Drawing.Point(120, 22)
 $textBoxFile.Size = New-Object System.Drawing.Size(400, 20)
 $form.Controls.Add($textBoxFile)
 
-# רשימת כלים פורנזיים
+# List of forensic tools
 $labelTools = New-Object System.Windows.Forms.Label
 $labelTools.Text = "Select Tool:"
 $labelTools.Location = New-Object System.Drawing.Point(20, 60)
@@ -39,20 +39,20 @@ $comboTools.Items.Add("strings")
 $comboTools.SelectedIndex = 0
 $form.Controls.Add($comboTools)
 
-# כפתור לבדיקה אם הכלי מותקן
+# Button to check if the tool is installed
 $buttonCheck = New-Object System.Windows.Forms.Button
 $buttonCheck.Text = "Check Installation"
 $buttonCheck.Location = New-Object System.Drawing.Point(20,100)
 $form.Controls.Add($buttonCheck)
 
-# כפתור התקנה
+# Button to install the tool
 $buttonInstall = New-Object System.Windows.Forms.Button
 $buttonInstall.Text = "Install Tool"
 $buttonInstall.Location = New-Object System.Drawing.Point(160,100)
 $buttonInstall.Visible = $false
 $form.Controls.Add($buttonInstall)
 
-# פונקציה לבדוק אם כלי מותקן
+# Function to check if the tool is installed
 Function CheckIfToolExists {
     param ($toolName)
     try {
@@ -67,7 +67,7 @@ Function CheckIfToolExists {
     }
 }
 
-# לחיצה על כפתור בדיקה
+# Click event for the check button
 $buttonCheck.Add_Click({
     $selectedTool = $comboTools.SelectedItem
     if (CheckIfToolExists $selectedTool) {
@@ -79,7 +79,7 @@ $buttonCheck.Add_Click({
     }
 })
 
-# התקנת הכלי אם חסר
+# Click event for the install button
 $buttonInstall.Add_Click({
     $selectedTool = $comboTools.SelectedItem
     $confirmation = [System.Windows.Forms.MessageBox]::Show("Install $selectedTool?", "Installation", "YesNo")
@@ -97,7 +97,7 @@ $buttonInstall.Add_Click({
     }
 })
 
-# כפתור הפעלת הכלי
+# Button to run the tool
 $buttonRun = New-Object System.Windows.Forms.Button
 $buttonRun.Text = "Run Analysis"
 $buttonRun.Location = New-Object System.Drawing.Point(20,140)
@@ -109,13 +109,13 @@ $buttonRun.Add_Click({
         return
     }
 
-    # בדיקת כלי
+    # Check if the tool is installed
     if (-not (CheckIfToolExists $selectedTool)) {
         [System.Windows.Forms.MessageBox]::Show("The selected tool is not installed!", "Error")
         return
     }
 
-    # הרצת הכלי
+    # Run the tool
     $output = ""
     try {
         if ($selectedTool -eq "pdf-parser.py") {
@@ -130,5 +130,5 @@ $buttonRun.Add_Click({
 })
 $form.Controls.Add($buttonRun)
 
-# הפעלת הטופס
+# Show the form
 $form.ShowDialog()
